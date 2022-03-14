@@ -3,6 +3,7 @@ package com.project.loppuproj.services;
 import com.project.loppuproj.DataModels.Student;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,6 +35,11 @@ public class StudentService {
 
     public void studentAdd(StudentMeta lisää) {
         students.add(new Student(lisää.name, lisää.email));
+        try {
+            this.state.writeStudentState(this.students);
+        } catch (IOException e) {
+            System.out.println("Error writing to state json");
+        }
     }
 
     public List<Student> getStudents() {
@@ -63,6 +69,11 @@ public class StudentService {
             if (studentti.getIdentifier() == identifier)
                 studentti.addOsp(addables);
         }
+        try {
+            this.state.writeStudentState(this.students);
+        } catch (IOException e) {
+            System.out.println("Error writing to state json");
+        }
     }
 
     public void addKurssi(UUID studentId, UUID kurssiId) {
@@ -70,6 +81,11 @@ public class StudentService {
             if (studentti.getIdentifier() == studentId) {
                 studentti.addToCourse(kurssiId);
             }
+        }
+        try {
+            this.state.writeStudentState(this.students);
+        } catch (IOException e) {
+            System.out.println("Error writing to state json");
         }
     }
 

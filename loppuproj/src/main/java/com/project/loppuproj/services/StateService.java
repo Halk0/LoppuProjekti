@@ -70,7 +70,7 @@ public class StateService {
         mapperi.writeValue(new FileWriter("./OpiskelijaState.json"), opiskelijat);
     }
 
-    public void WriteCourseState(List<Course> kurssit) throws IOException {
+    public void writeCourseState(List<Course> kurssit) throws IOException {
         ObjectMapper mapperi = new ObjectMapper();
         mapperi.writeValue(new FileWriter("./KurssiState.json"), kurssit);
     }

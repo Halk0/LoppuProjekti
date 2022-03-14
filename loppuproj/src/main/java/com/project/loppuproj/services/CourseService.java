@@ -1,6 +1,7 @@
 package com.project.loppuproj.services;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +35,11 @@ public class CourseService {
 
     public void courseAdd(CourseMeta lisää) {
         this.courses.add(new Course(lisää.subject, lisää.teacher, lisää.roomNum));
+        try {
+            this.state.writeCourseState(this.courses);
+        } catch (IOException e) {
+            System.out.println("error writing to state json");
+        }
     }
 
     public List<Course> getCourses() {
@@ -80,6 +86,11 @@ public class CourseService {
         for (Course kurssi : this.courses) {
             if (kurssi.getUUID() == courseId) {
                 kurssi.addStudent(studentId);
+            }
+            try {
+                this.state.writeCourseState(this.courses);
+            } catch (IOException e) {
+                System.out.println("Error writing to state json");
             }
         }
         throw new NoSuchElementException("No such course found");
