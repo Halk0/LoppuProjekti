@@ -1,29 +1,23 @@
-package com.project.loppuproj.services;
+package com.project.loppuproj.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.project.loppuproj.data.Course;
+import com.project.loppuproj.data.CourseMeta;
+
 import java.util.NoSuchElementException;
 
-import com.project.loppuproj.DataModels.Course;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CourseService {
+
     protected StateService state = new StateService();
-
-    @Autowired
     public List<Course> courses = new ArrayList<>();
-
-    public class CourseMeta {
-        private String subject;
-        private String teacher;
-        private int roomNum;
-    }
 
     public CourseService() {
         try {
@@ -48,7 +42,7 @@ public class CourseService {
 
     public Course searchCoursesById(UUID identifier) throws NoSuchElementException {
         for (Course kurssi : this.courses)
-            if (kurssi.getUUID() == identifier)
+            if (kurssi.getUUID().equals(identifier))
                 return kurssi;
         throw new NoSuchElementException("Student not found from state");
     }
@@ -56,9 +50,11 @@ public class CourseService {
     public List<Course> searchCoursesByDesc(String searchVal) {
         List<Course> löydetyt = new ArrayList<>();
         for (Course kurssi : this.courses) {
-            if (kurssi.getSubject() == searchVal)
+            if (kurssi.getSubject().toLowerCase().equals(searchVal.toLowerCase())) {
+                System.out
+                        .println("comparing " + kurssi.getSubject().toLowerCase() + " and " + searchVal.toLowerCase());
                 löydetyt.add(kurssi);
-            else if (kurssi.getTeacher() == searchVal)
+            } else if (kurssi.getTeacher().toLowerCase().equals(searchVal.toLowerCase()))
                 löydetyt.add(kurssi);
         }
         return löydetyt;
@@ -73,10 +69,11 @@ public class CourseService {
         return löydetyt;
     }
 
-    public List<Course> searchStudentsCourses(UUID studentId) {
+    public List<Course> searchStudentsCourses(String studentId) {
         List<Course> löydetyt = new ArrayList<>();
+
         for (Course kurssi : this.courses) {
-            if (kurssi.getStudents().contains(studentId))
+            if (kurssi.getStudents().contains(UUID.fromString(studentId)))
                 löydetyt.add(kurssi);
         }
         return löydetyt;
@@ -84,11 +81,12 @@ public class CourseService {
 
     public void addStudentToCourse(UUID studentId, UUID courseId) throws NoSuchElementException {
         for (Course kurssi : this.courses) {
-            if (kurssi.getUUID() == courseId) {
+            if (kurssi.getUUID().equals(courseId)) {
                 kurssi.addStudent(studentId);
             }
             try {
                 this.state.writeCourseState(this.courses);
+                return;
             } catch (IOException e) {
                 System.out.println("Error writing to state json");
             }
