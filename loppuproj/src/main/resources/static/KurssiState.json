@@ -1,0 +1,11 @@
+[
+    {
+        "subject": "Python",
+        "teacher": "Ope",
+        "students": [
+            "0f7a7042-d2e0-465e-b0f9-7f1128193ac4"
+        ],
+        "classId": "835383b5-3d24-47d8-b26e-7571dc56caca",
+        "roomNum": 1
+    }
+]
