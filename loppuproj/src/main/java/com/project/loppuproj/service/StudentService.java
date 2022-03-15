@@ -1,6 +1,4 @@
-package com.project.loppuproj.services;
-
-import com.project.loppuproj.DataModels.Student;
+package com.project.loppuproj.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,21 +7,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.loppuproj.data.Student;
+import com.project.loppuproj.data.StudentMeta;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class StudentService {
 
     protected StateService state = new StateService();
-
-    @Autowired
     private List<Student> students = new ArrayList<>();
-
-    public class StudentMeta {
-        private String name;
-        private String email;
-    }
 
     public StudentService() {
         try {
@@ -48,7 +41,7 @@ public class StudentService {
 
     public Student searchStudentsById(UUID identifier) throws NoSuchElementException {
         for (Student studentti : this.students)
-            if (studentti.getIdentifier() == identifier)
+            if (studentti.getIdentifier().equals(identifier))
                 return studentti;
         throw new NoSuchElementException("Student not found from state");
     }
@@ -56,9 +49,9 @@ public class StudentService {
     public List<Student> searchStudentsContact(String searchVal) {
         List<Student> löydetyt = new ArrayList<>();
         for (Student studentti : this.students) {
-            if (studentti.getName() == searchVal)
+            if (studentti.getName().toLowerCase().equals(searchVal.toLowerCase()))
                 löydetyt.add(studentti);
-            else if (studentti.getEmail() == searchVal)
+            else if (studentti.getEmail().toLowerCase().equals(searchVal.toLowerCase()))
                 löydetyt.add(studentti);
         }
         return löydetyt;
@@ -66,7 +59,7 @@ public class StudentService {
 
     public void addOsp(int addables, UUID identifier) {
         for (Student studentti : this.students) {
-            if (studentti.getIdentifier() == identifier)
+            if (studentti.getIdentifier().equals(identifier))
                 studentti.addOsp(addables);
         }
         try {
@@ -76,17 +69,19 @@ public class StudentService {
         }
     }
 
-    public void addKurssi(UUID studentId, UUID kurssiId) {
+    public void addKurssi(UUID studentId, UUID kurssiId) throws NoSuchElementException {
         for (Student studentti : this.students) {
-            if (studentti.getIdentifier() == studentId) {
+            if (studentti.getIdentifier().equals(studentId)) {
                 studentti.addToCourse(kurssiId);
             }
+            try {
+                this.state.writeStudentState(this.students);
+                return;
+            } catch (IOException e) {
+                System.out.println("Error writing to state json");
+            }
         }
-        try {
-            this.state.writeStudentState(this.students);
-        } catch (IOException e) {
-            System.out.println("Error writing to state json");
-        }
+        throw new NoSuchElementException("No such student");
     }
 
 }
