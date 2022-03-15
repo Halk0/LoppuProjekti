@@ -5,6 +5,7 @@ public class CourseMeta {
     public String teacher;
     public int roomNum;
 
+    // init metadata to do typechecking on requests from REST-api
     CourseMeta(String subject, String teacher, int roomNum) {
         this.subject = subject;
         this.teacher = teacher;
