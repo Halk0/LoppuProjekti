@@ -1,4 +1,4 @@
-package com.project.loppuproj.DataModels;
+package com.project.loppuproj.data;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -7,8 +7,11 @@ public class Student {
     private String name;
     private String email;
     private int osp = 0;
-    ArrayList<UUID> cources = new ArrayList<>();
+    private ArrayList<UUID> courses = new ArrayList<>();
     protected UUID identifier = UUID.randomUUID();
+
+    public Student() {
+    }
 
     public Student(String name, String email) {
         this.name = name;
@@ -50,7 +53,11 @@ public class Student {
     }
 
     public void addToCourse(UUID kurssiId) {
-        this.cources.add(kurssiId);
+        this.courses.add(kurssiId);
+    }
+
+    public ArrayList<UUID> getCourses() {
+        return this.courses;
     }
 
 }
